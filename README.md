@@ -5,42 +5,44 @@ A portable guitar editor is coded based on react.js, inspired by Markdown and La
 The chords and tab paragraphs components are based on `<svg/>` tech.
 
 Two components that related to this projects are published to npm. If you are interested in how to develop a guitar chord with React.js, please check them
-* [react-guitar-lyrics](https://github.com/Haixiang6123/react-guitar-lyrics)
-* [react-chord-generator](https://github.com/Haixiang6123/react-chord-generator)
 
-## Demo
+- [react-guitar-lyrics](https://github.com/Haixiang6123/react-guitar-lyrics)
+- [react-chord-generator](https://github.com/Haixiang6123/react-chord-generator)
 
-[Click here to see the demo](https://haixiang6123.github.io/guitar-tabs-editor/#/)
+## Changes to this fork
+
+- Dockerized
+- Hacked together the ability to click on a text chord name and have it play the chord
+  - I don't know react, so I hacked it using normal JS
+  - Uses [this](https://codepen.io/johnslipper/pen/eYgZMRL)
+  - Chord definitions are from [T-vK/chord-collection](https://github.com/T-vK/chord-collection/blob/master/chords.js)
 
 ## ScreenShot
+
 ![Home page](./Screenshots/Home.png)
 
 ![Preview page](./Screenshots/Preview.png)
 
 ![Tips pop](./Screenshots/Tips.png)
 
-## Directory
-
-```tree
-├── README.md
-├── Screenshots         # Screen shots
-├── package-lock.json
-├── package.json
-├── public
-├── src                 # Source codes
-└── yarn.lock
-```
-
 ## How to run
 
-```bash
-$ npm install
+### Docker
 
-$ npm start
+```bash
+docker compose up
 ```
 
-```$xslt
-$ npm run build         # To build this project
+### Local
+
+```bash
+npm install
+
+npm start
+```
+
+```bash
+npm run build         # To build this project
 ```
 
 ## Future
