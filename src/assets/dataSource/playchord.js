@@ -1,3 +1,23 @@
+import {CHORD_COLLECTION} from './chordCollection.js';
+
+const chordDict = Object.keys(CHORD_COLLECTION).reduce((acc, chord) => {
+  const oFirst = CHORD_COLLECTION[chord][0];
+  if (oFirst !== null) {
+    const arrPositions = oFirst.positions;
+    if (arrPositions !== null) {
+      acc[chord] = arrPositions.map((fret) => {
+        if (fret === 'x') {
+          return null;
+        } else {
+          // convert fret to number
+          return fret * 1;
+        }
+      });
+    }
+  }
+  return acc;
+}, {});
+
 const context = new AudioContext();
 
 // Signal dampening amount
@@ -109,60 +129,10 @@ function playChord(frets) {
   context.resume().then(strum(frets));
 }
 
-function playChordName(name) {
-  console.log('Play chord:', name);
-
+export default function playChordName(name) {
+  console.log('Playing chord:', name);
   const frets = chordDict[name];
   if (frets) {
     playChord(frets);
   }
 }
-
-function playChordNameFromEvent(event) {
-  playChordNameFromElement(event.target);
-}
-
-function playChordNameFromElement(element) {
-  const chordName = element.innerText;
-  playChordName(chordName);
-}
-
-// Array.from(document.getElementsByClassName('ge-anchor-chordname')).forEach((el) => {
-//   el.addEventListener('click', () => {
-//     const chordName = el.innerText;
-//     console.log(chordName);
-//     playChordName(chordName);
-//   });
-// });
-
-// Function to monitor the webpage for added <a> elements
-function monitorWebpage() {
-  const anchorElements = document.getElementsByTagName('a');
-
-  // Add event listener to existing <a> elements
-  for (let i = 0; i < anchorElements.length; i++) {
-    anchorElements[i].addEventListener('click', playChordNameFromEvent);
-  }
-
-  // Create a mutation observer to monitor for added <a> elements
-  const observer = new MutationObserver(function (mutations) {
-    mutations.forEach(function (mutation) {
-      if (mutation.type === 'childList') {
-        const addedNodes = mutation.addedNodes;
-        for (let i = 0; i < addedNodes.length; i++) {
-          if (addedNodes[i].nodeName === 'A') {
-            addedNodes[i].addEventListener('click', playChordNameFromEvent);
-          }
-        }
-      }
-    });
-  });
-
-  // Start observing changes in the document
-  observer.observe(document, {childList: true, subtree: true});
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  // Start monitoring the webpage after the page has finished loading
-  monitorWebpage();
-});

@@ -10,6 +10,9 @@ import './styles.css';
 // Import chords dataSource
 import chords from '../../../../assets/dataSource/chords';
 
+// Import playchord dataSource
+import playchord from '../../../../assets/dataSource/playchord';
+
 // Define regular expression to get the chord
 const chordRegExp = /(?:\[([^\]]*)])?(.)?([^[]*)/g;
 const englishRegExp = /[a-zA-Z]/;
@@ -76,22 +79,17 @@ export default class Lyrics extends PureComponent {
                 <span className='ge-chord-item' key={index}>
                   <span style={this.mapAnchorStyle(chordData.anchor, chordData.index)} className='ge-anchor'>
                     {/* Anchor chord */}
-                    {
-                      isEmbedChord ? (
-                        <span className='ge-anchor-chordimg'>
+                    {isEmbedChord ? (
+                      <span className='ge-anchor-chordimg'>
+                        <button className='ge-chord-link' onClick={() => playchord(chordData.name)}>
                           <Chord chord={chord} options={{size: 'small'}} />
-                        </span>
-                      ) : (
-                        // make the chord name clickable to play the chord sound
-                        // <a href="javascript:void(0)" className="ge-anchor-chordname">{chordData.name}</a>
-                        // on click run the clienside javascript: playChordNameFromElement(this)
-                        // <a href="#" onClick={() => console.log(this)}>Click me</a>
-                        <a href='javascript:void(0)' className='ge-anchor-chordname'>
-                          {chordData.name}
-                        </a>
-                      )
-                      // <span className="ge-anchor-chordname">{chordData.name}</span>
-                    }
+                        </button>
+                      </span>
+                    ) : (
+                      <button onClick={() => playchord(chordData.name)} className='ge-chord-link ge-anchor-chordname'>
+                        {chordData.name}
+                      </button>
+                    )}
                     {/* Anchor Text */}
                     <span>{chordData.anchor}</span>
                   </span>
