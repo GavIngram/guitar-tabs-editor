@@ -4,16 +4,16 @@ services:
     container_name: guitar-tabs-editor
     build:
       context: .
-      #dockerfile: Dockerfile.dev
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.dev
+      #dockerfile: Dockerfile.prod
     restart: unless-stopped
     ports:
-      - '3000:80'
-    #volumes:
-    #  - .:/app
+      - '3000:3000'
+    volumes:
+      - .:/app
     #env_file:
     #  - ./.env
     environment:
-      # - NODE_ENV=development
-      - NODE_ENV=production
-    #command: npm start
+      - NODE_ENV=development
+      #- NODE_ENV=production
+    command: npm start
