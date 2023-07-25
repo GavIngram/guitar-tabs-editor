@@ -23,7 +23,7 @@ const chordRegExp = /\[([^\]]*)]/g;
 const searchChord = (name) => {
   let chordsLen = chords.length;
 
-  for (let i = 0 ; i < chordsLen ; i++) {
+  for (let i = 0; i < chordsLen; i++) {
     if (chords[i].name === name) {
       return chords[i];
     }
@@ -33,7 +33,7 @@ const searchChord = (name) => {
 export default {
   /**
    * Remove some unnecssary charaters
-   * @param {*} source 
+   * @param {*} source
    */
   preProcess(source) {
     let filteredSource = source;
@@ -45,7 +45,7 @@ export default {
   },
   /**
    * To parse the meta data
-   * @param {string} source 
+   * @param {string} source
    */
   parseMeta(source) {
     let metaData = [];
@@ -59,17 +59,17 @@ export default {
   },
   /**
    * To parse the body excluding meta data
-   * @param {string} source 
+   * @param {string} source
    */
   parseBody(source, isEmbedChord) {
     let sourceBuffer = source.split('\n'),
-        sourceBufferLen = sourceBuffer.length,
-        renderedBuffer = [],
-        flag = {
-          id: '',
-          index: -1,
-        }, // To cache the label
-        text = '';
+      sourceBufferLen = sourceBuffer.length,
+      renderedBuffer = [],
+      flag = {
+        id: '',
+        index: -1,
+      }, // To cache the label
+      text = '';
 
     // Iterate each line
     for (let i = 0; i < sourceBufferLen; i++) {
@@ -78,33 +78,32 @@ export default {
 
       if (spaceRegExp.test(text)) {
         // Ignore empty line
-      }
-      else if (startChorusRegExp.test(text)) {
-         renderedBuffer[renderedBuffer.length] = [];
-         /*
-          * If this line match {start_of_chorus} label
-          * then append the tab component to the buffer
-          */
-         flag = {
+      } else if (startChorusRegExp.test(text)) {
+        renderedBuffer[renderedBuffer.length] = [];
+        /*
+         * If this line match {start_of_chorus} label
+         * then append the tab component to the buffer
+         */
+        flag = {
           id: 'chorus',
-          index: renderedBuffer.length - 1 // record current rendered array index
+          index: renderedBuffer.length - 1, // record current rendered array index
         };
       }
       // Match {start_of_tab} label
       else if (startTabRegExp.test(text)) {
         renderedBuffer[renderedBuffer.length] = [];
         /*
-          * If this line match {end_of_chorus} label
-          * then append the tab component to the buffer
-          */
+         * If this line match {end_of_chorus} label
+         * then append the tab component to the buffer
+         */
         flag = {
           id: 'tab',
-          index: renderedBuffer.length - 1 // record current rendered array index
-        }
+          index: renderedBuffer.length - 1, // record current rendered array index
+        };
       }
       // Match {end_of_tab} label
       else if (endTabRegExp.test(text)) {
-        renderedBuffer[flag.index] = <TabP source={renderedBuffer[flag.index]}/>
+        renderedBuffer[flag.index] = <TabP source={renderedBuffer[flag.index]} />;
 
         /*
          * If this line match {end_of_tab} label
@@ -112,24 +111,29 @@ export default {
          */
         flag = {
           id: '',
-          index: -1
+          index: -1,
         };
-      }
-      else if (endChorusRegExp.test(text)) {
+      } else if (endChorusRegExp.test(text)) {
         // Add the whole component to rendered array
-        renderedBuffer[flag.index] = (<Chorus>{
-          renderedBuffer[flag.index].map((lyrics, index) => (
-            <Lyrics isEmbedChord={isEmbedChord} key={index}>{lyrics}</Lyrics>
-          ))
-        }</Chorus>);
+        renderedBuffer[flag.index] = Array.isArray(renderedBuffer[flag.index]) ? (
+          <Chorus>
+            {renderedBuffer[flag.index].map((lyrics, index) => (
+              <Lyrics isEmbedChord={isEmbedChord} key={index}>
+                {lyrics}
+              </Lyrics>
+            ))}
+          </Chorus>
+        ) : (
+          renderedBuffer[flag.index]
+        );
         flag = {
           id: '',
-          index: -1
+          index: -1,
         };
       }
       // Reading tab content
       else if (flag.id === 'tab') {
-        renderedBuffer[flag.index] = renderedBuffer[flag.index] + text + "\n";
+        renderedBuffer[flag.index] = renderedBuffer[flag.index] + text + '\n';
       }
       // Reading chorus content
       else if (flag.id === 'chorus') {
@@ -138,21 +142,21 @@ export default {
       }
       // Match {comment: ...} label
       else if (commentRegExp.test(text)) {
-        /* 
+        /*
          * If this line match {comment} label
          * then append the Comment comonent
          */
         text.replace(commentRegExp, (match, comment) => {
           renderedBuffer.push(<Comment>{comment}</Comment>);
-        })
+        });
       }
       // Match the other part, like lyrics
       else {
-        /* 
+        /*
          * If this line is lyrics
          * then append the Lyrics component
          */
-        renderedBuffer.push(<Lyrics isEmbedChord={isEmbedChord}>{text}</Lyrics>)
+        renderedBuffer.push(<Lyrics isEmbedChord={isEmbedChord}>{text}</Lyrics>);
       }
     }
 
@@ -165,7 +169,7 @@ export default {
   parseChords(source) {
     // Chords
     let chords = new Set(),
-        chord = {};
+      chord = {};
 
     source.replace(chordRegExp, (match, chordName) => {
       chord = searchChord(chordName);
@@ -180,7 +184,5 @@ export default {
    * Method to parse source
    * @param source
    */
-  parseTab(source) {
-
-  }
-}
+  parseTab(source) {},
+};
